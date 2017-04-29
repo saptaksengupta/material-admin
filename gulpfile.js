@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     minifyCss = require('gulp-minify-css'),
     uglify = require('gulp-uglify'),
+    concat = require('gulp-concat'),
     browserSync = require('browser-sync').create(),
     reload = browserSync.reload;
 
@@ -20,14 +21,16 @@ gulp.task('jshint', function () {
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('uglifyScripts', function () {
+gulp.task('scripts', function () {
     gulp.src('assets/js/*.js')
+        .pipe(concat('all.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
 });
 
-gulp.task('uglifyStyles', function () {
+gulp.task('styles', function () {
     gulp.src('assets/css/*.css')
+        .pipe(concat('all.min.css'))
         .pipe(minifyCss({
             keepBreaks: true
         }))
@@ -35,10 +38,10 @@ gulp.task('uglifyStyles', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch('assets/js/*.js', ['uglifyScripts']);
-    gulp.watch('assets/css/*.css', ['uglifyStyles']);
+    gulp.watch('assets/js/*.js', ['scripts']);
+    gulp.watch('assets/css/*.css', ['styles']);
 });
 
-gulp.task('build', ['uglifyStyles', 'uglifyScripts', 'jshint']);
+gulp.task('build', ['styles', 'scripts', 'jshint']);
 
 gulp.task('default', ['watch']);
